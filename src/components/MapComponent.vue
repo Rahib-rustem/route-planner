@@ -6,20 +6,33 @@ async
 defer
 ></script> 
 
+
 <template>
   <div ref="map" class="map-container" style="width: 100%; height: 100vh;"></div>
 </template>
 
 <script>
 export default {
-  name: 'MapComponent',
+  props: {
+    routeGeometry: {
+      type: Array,
+      default: () => [],
+    },
+  },
   data() {
     return {
       map: null,
-      directionsService: null,
-      directionsRenderer: null,
       routePath: null,
+      startMarker: null,
+      endMarker: null,
     };
+  },
+  watch: {
+    routeGeometry(newVal) {
+      if (newVal && newVal.length) {
+        this.displayRoute(newVal); 
+      }
+    },
   },
   mounted() {
     this.initMap();
@@ -31,50 +44,58 @@ export default {
         zoom: 6,
       });
 
-      this.directionsService = new google.maps.DirectionsService();
-      this.directionsRenderer = new google.maps.DirectionsRenderer({
-        preserveViewport: true,
-        suppressMarkers: true,
-        map: this.map,
-        polylineOptions: {
-          strokeColor: 'red',
-          strokeOpacity: 1.0,
-          strokeWeight: 4,
-        },
+      google.maps.event.addListenerOnce(this.map, 'idle', () => {
+        google.maps.event.trigger(this.map, 'resize');
       });
     },
     displayRoute(routeGeometry) {
-
       const coordinates = routeGeometry.map(coord => ({
-          lat: parseFloat(coord[0].toFixed(6)),
-          lng: parseFloat(coord[1].toFixed(6)),
-        }));
-
-      const routePath = new google.maps.Polyline({
-        path: coordinates,
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 4,
-      });
+        lat: parseFloat(coord[0].toFixed(6)),
+        lng: parseFloat(coord[1].toFixed(6)),
+      }));
 
       if (this.routePath) {
         this.routePath.setMap(null);
       }
 
-      routePath.setMap(this.map);
-      this.routePath = routePath;
-        
+      this.routePath = new google.maps.Polyline({
+        path: coordinates,
+        geodesic: true,
+        strokeColor: '#7087FF',
+        strokeOpacity: 1.0,
+        strokeWeight: 6,
+      });
+
+      this.routePath.setMap(this.map);
+
       const bounds = new google.maps.LatLngBounds();
       coordinates.forEach(coord => bounds.extend(coord));
       this.map.fitBounds(bounds);
+
+      if (this.startMarker) {
+        this.startMarker.setMap(null);
+      }
+      this.startMarker = new google.maps.Marker({
+        position: coordinates[0],
+        map: this.map,
+        title: 'Start',
+        icon: {
+          url: require('../assets/start.png'),
+        },
+      });
+
+      if (this.endMarker) {
+        this.endMarker.setMap(null);
+      }
+      this.endMarker = new google.maps.Marker({
+        position: coordinates[coordinates.length - 1],
+        map: this.map,
+        title: 'End',
+        icon: {
+          url: require('../assets/end.png'),
+        },
+      });
     },
   },
 };
 </script>
-
-<style scoped>
-</style>
-
-
-
