@@ -11,6 +11,7 @@
       <h2 class="title">{{ title }}</h2>
       <v-row>
         <CountrySelector
+          title="Loading"
           label="Country"
           v-model="localLoadingCountry"
           :items="countries"
@@ -26,6 +27,7 @@
       </v-row>
       <v-row>
         <CountrySelector
+          title="Unloading"
           label="Country"
           v-model="localUnloadingCountry"
           :items="countries"
@@ -69,7 +71,7 @@
   import AddressInput from './AddressInput.vue';
   import AvoidCountriesSelector from './AvoidCountriesSelector.vue';
   import SubmitButton from './SubmitButton.vue';
-  import RouteDetails from './RouteDetails.vue';
+  import RouteDetails from '../indigator/RouteDetails.vue';
   
   export default {
     components: {
@@ -154,6 +156,12 @@
   
         const loadingAutocomplete = new google.maps.places.Autocomplete(loadingInput);
         const unloadingAutocomplete = new google.maps.places.Autocomplete(unloadingInput);
+
+        setTimeout(() => {
+          loadingInput.placeholder = 'Address';
+          unloadingInput.placeholder = 'Address'
+
+        }, 100);
   
         loadingAutocomplete.addListener('place_changed', () => {
           const place = loadingAutocomplete.getPlace();
@@ -162,7 +170,7 @@
            
             this.loadingAddressLat = place.geometry.location.lat();
             this.loadingAddressLng = place.geometry.location.lng();
-            this.localLoadingAddress = place.formatted_address; // Keep selected address
+            this.localLoadingAddress = place.formatted_address;
           }
         });
   
@@ -171,7 +179,7 @@
           if (place.geometry) {
             this.unloadingAddressLat = place.geometry.location.lat();
             this.unloadingAddressLng = place.geometry.location.lng();
-            this.localUnloadingAddress = place.formatted_address; // Keep selected address
+            this.localUnloadingAddress = place.formatted_address;
           }
         });
       },

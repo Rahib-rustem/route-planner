@@ -1,6 +1,6 @@
    <template>
     <v-col cols="4">
-      <h3 class="label">{{ label }}</h3>
+      <h3 class="label">{{ title }}</h3>
       <v-select
           v-model="localValue"
           :items="items"
@@ -15,6 +15,7 @@
   <script>
   export default {
     props: {
+      title: String,
       label: String,
       items: Array,
       value: String,

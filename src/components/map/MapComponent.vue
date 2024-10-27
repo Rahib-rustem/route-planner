@@ -80,7 +80,7 @@ export default {
         map: this.map,
         title: 'Start',
         icon: {
-          url: require('../assets/start.png'),
+          url: require('../../assets/start.png'),
         },
       });
 
@@ -92,7 +92,7 @@ export default {
         map: this.map,
         title: 'End',
         icon: {
-          url: require('../assets/end.png'),
+          url: require('../../assets/end.png'),
         },
       });
     },

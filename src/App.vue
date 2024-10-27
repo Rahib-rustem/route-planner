@@ -36,10 +36,11 @@ defer
 </template>
 
 <script>
-import NavigationBar from './components/NavigationBar.vue';
-import FormSection from './components/FormSection.vue';
-import ErrorMessage from './components/ErrorMessage.vue';
-import MapComponent from './components/MapComponent.vue'
+import NavigationBar from './components/navigation/NavigationBar';
+import FormSection from './components/sections/form/FormSection';
+import ErrorMessage from './components/sections/message/ErrorMessage';
+import MapComponent from './components/map/MapComponent'
+
 
 export default {
   components: {

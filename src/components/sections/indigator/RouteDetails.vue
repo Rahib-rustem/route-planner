@@ -18,12 +18,11 @@
   
   <script>
   import RouteDetailItem from './RouteDetailItem.vue';
-  
   export default {
    data() {
     return {
-      imgSrcDistance: require('../assets/distance.png'),
-      imgSrcTime: require('../assets/time.png'),
+      imgSrcDistance: require('../../../assets/distance.png'),
+      imgSrcTime: require('../../../assets/time.png'),
 
     }
    },

@@ -3,7 +3,7 @@
       <h3 class="title">{{ title }}</h3>
       <div v-if="message">
         <figure class="content">
-          <img src="../assets/warning.png" alt="warning" width="18px" />
+          <img src="../../../assets/warning.png" alt="warning" width="18px" />
           {{ message }}
         </figure>
       </div>
