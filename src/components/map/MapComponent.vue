@@ -6,9 +6,8 @@ async
 defer
 ></script> 
 
-
 <template>
-  <div ref="map" class="map-container" style="width: 100%; height: 100vh;"></div>
+  <div ref="map" class="map-container"></div>
 </template>
 
 <script>
@@ -82,6 +81,7 @@ export default {
         icon: {
           url: require('../../assets/start.png'),
         },
+        scaledSize: new google.maps.Size(24, 24)
       });
 
       if (this.endMarker) {
@@ -99,3 +99,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .map-container {
+    width: 100%; 
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+
+  }
+</style>

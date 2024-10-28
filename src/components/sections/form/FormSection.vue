@@ -18,11 +18,13 @@
           required
         />
         <AddressInput
-          ref="loadingAddressInput"
-          label="Address"
-           subtitle="Add loading spot"
-          v-model="localLoadingAddress"
-          required
+        ref="loadingAddressInput"
+        label="Address"
+        subtitle="Add loading spot"
+        v-model="localLoadingAddress"
+        :selected-country="localLoadingCountry"
+        required
+        @placeSelected="onLoadingPlaceSelected"
         />
       </v-row>
       <v-row>
@@ -34,11 +36,13 @@
           required
         />
         <AddressInput
-          ref="unloadingAddressInput"
-          label="Address"
-          subtitle="Add unloading spot"
-          v-model="localUnloadingAddress"
-          required
+            ref="unloadingAddressInput"
+            label="Address"
+            subtitle="Add unloading spot"
+            v-model="localUnloadingAddress"
+            :selected-country="localUnloadingCountry"
+            required
+            @placeSelected="onUnloadingPlaceSelected"
         />
       </v-row>
       <v-row>
@@ -50,13 +54,12 @@
       </v-row>
       <v-row>
         <SubmitButton
-          :disabled="isCalculateButtonDisabled"
+           :disabled="isCalculateButtonDisabled"
           :calculating="localCalculating"
           @submit="submit"
         />
       </v-row>
-      <v-row  v-if="routeDetails && routeDetails.distance || noRouteFound" class="seperator"/>
-
+      <v-row v-if="routeDetails && routeDetails.distance || noRouteFound" class="seperator"/>
       <v-row v-if="routeDetails && routeDetails.distance">
         <RouteDetails :details="routeDetails" />
       </v-row>
@@ -64,7 +67,6 @@
   </template>
   
   <script>
-
   import axios from 'axios';
   import polyline from 'polyline';
   import CountrySelector from './CountrySelector.vue';
@@ -79,7 +81,7 @@
       AddressInput,
       AvoidCountriesSelector,
       SubmitButton,
-      RouteDetails
+      RouteDetails,
     },
     props: {
       title: String,
@@ -90,12 +92,10 @@
     },
     data() {
       return {
-
-        localLoadingCountry: '',
+        localLoadingCountry: 'DE',
         localLoadingAddress: '',
-        localUnloadingCountry: '',
+        localUnloadingCountry: 'DE',
         localUnloadingAddress: '',
-
         localAvoidCountries: this.avoidCountries,
         localValid: this.valid,
         loadingAddressLat: null,
@@ -109,86 +109,52 @@
         localCalculating: this.calculating,
       };
     },
-
+  
     watch: {
-        localLoadingCountry(newVal) {
-          this.$emit('update:loadingCountry', newVal);
-
-        },
-        localLoadingAddress(newVal) {
-          this.$emit('update:loadingAddress', newVal);
-
-        },
-        localUnloadingCountry(newVal) {
-          this.$emit('update:unloadingCountry', newVal);
-
-        },
-        localUnloadingAddress(newVal) {
-          this.$emit('update:unloadingAddress', newVal);
-
-        },
-        localAvoidCountries(newVal) {
-          this.$emit('update:avoidCountries', newVal);
-
-        }
+      localLoadingCountry(newVal) {
+        this.$emit('update:loadingCountry', newVal);
+      },
+      localLoadingAddress(newVal) {
+        this.$emit('update:loadingAddress', newVal);
+      },
+      localUnloadingCountry(newVal) {
+        this.$emit('update:unloadingCountry', newVal);
+      },
+      localUnloadingAddress(newVal) {
+        this.$emit('update:unloadingAddress', newVal);
+      },
+      localAvoidCountries(newVal) {
+        this.$emit('update:avoidCountries', newVal);
+      },
     },
-
-    mounted() {
-      this.initAutocomplete();
-    },
+  
     computed: {
-        isCalculateButtonDisabled() {
-          const isDisabled = !(
-            this.localLoadingCountry &&
-            this.localLoadingAddress &&
-            this.localUnloadingCountry &&
-            this.localUnloadingAddress
-          );
-          return isDisabled;
-        },
+      isCalculateButtonDisabled() {
+        return !(
+          this.localLoadingCountry &&
+          this.localLoadingAddress &&
+          this.localUnloadingCountry &&
+          this.localUnloadingAddress
+        );
       },
-
+    },
+  
     methods: {
-
-      initAutocomplete() {
-        const loadingInput = this.$refs.loadingAddressInput.$el.querySelector('input');
-        const unloadingInput = this.$refs.unloadingAddressInput.$el.querySelector('input');
-  
-        const loadingAutocomplete = new google.maps.places.Autocomplete(loadingInput);
-        const unloadingAutocomplete = new google.maps.places.Autocomplete(unloadingInput);
-
-        setTimeout(() => {
-          loadingInput.placeholder = 'Address';
-          unloadingInput.placeholder = 'Address'
-
-        }, 100);
-  
-        loadingAutocomplete.addListener('place_changed', () => {
-          const place = loadingAutocomplete.getPlace();
-         
-          if (place.geometry) {
-           
-            this.loadingAddressLat = place.geometry.location.lat();
-            this.loadingAddressLng = place.geometry.location.lng();
-            this.localLoadingAddress = place.formatted_address;
-          }
-        });
-  
-        unloadingAutocomplete.addListener('place_changed', () => {
-          const place = unloadingAutocomplete.getPlace();
-          if (place.geometry) {
-            this.unloadingAddressLat = place.geometry.location.lat();
-            this.unloadingAddressLng = place.geometry.location.lng();
-            this.localUnloadingAddress = place.formatted_address;
-          }
-        });
-      },
       async onAvoidCountriesChange(selectedCountries) {
         this.localAvoidCountries = selectedCountries;
       },
-  
+
+      onLoadingPlaceSelected(place) {
+      this.localLoadingAddress = place.address;
+      this.loadingAddressLat = place.lat;
+      this.loadingAddressLng = place.lng;
+    },
+    onUnloadingPlaceSelected(place) {
+      this.localUnloadingAddress = place.address;
+      this.unloadingAddressLat = place.lat;
+      this.unloadingAddressLng = place.lng;
+    },
       async calculateRoute() {
-  
         this.localCalculating = true;
         this.$emit('update:calculating', true);
         this.noRouteFound = false;
@@ -232,7 +198,6 @@
         } finally {
           this.localCalculating = false;
           this.$emit('update:calculating', false);
-         
         }
       },
   
@@ -249,8 +214,8 @@
     },
   };
   </script>
-  
 
+  
   <style scoped>
   .form {
     padding-left: 13px;
@@ -262,7 +227,9 @@
     }
   }
   .title {
+    margin-top: 50px;
     margin-bottom: 20px;
+    
   }
   </style>
   

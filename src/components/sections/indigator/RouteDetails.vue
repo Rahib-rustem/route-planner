@@ -37,7 +37,7 @@
   
   <style scoped>
   .route_title {
-    margin-top: 60px;
+    margin-top: 40px;
     margin-bottom: 20px;
   }
   .route_details {

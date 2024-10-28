@@ -1,5 +1,5 @@
    <template>
-    <v-col cols="4">
+    <v-col cols="4 column">
       <h3 class="label">{{ title }}</h3>
       <v-select
           v-model="localValue"
@@ -46,6 +46,9 @@
   </script>
   
   <style scoped>
+  .column {
+    padding-bottom: 0;
+  }
   .label {
     margin-bottom: 5px;
   }

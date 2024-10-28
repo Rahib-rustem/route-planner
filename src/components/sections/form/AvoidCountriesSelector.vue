@@ -55,7 +55,6 @@
   };
   </script>
   
-  
   <style scoped>
   .features_title{
     margin-bottom: 15px;

@@ -46,6 +46,7 @@
     width: 16px;
     height: 16px;
     margin-right: 10px;
+    object-fit: contain;
   }
   .indicator {
     font-size: 18px;

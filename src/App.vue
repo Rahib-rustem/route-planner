@@ -8,9 +8,8 @@ defer
 
 <template>
   <v-app class="wrapper">
-    <v-row>
+   
       <NavigationBar :logoSrc="logoSrc" />
-    </v-row>
     <v-row>
       <v-col cols="4">
         <FormSection
@@ -28,7 +27,7 @@ defer
         />
         <ErrorMessage title="Route details" v-if="noRouteFound" :message="noRouteMessage" />
       </v-col>
-      <v-col cols="8">
+      <v-col cols="8 map">
         <MapComponent ref="mapComponent" :routeGeometry="routeGeometry" />
       </v-col>
     </v-row>
@@ -86,8 +85,15 @@ export default {
 </script>
 
 
-<style scoped>
-.wrapper {
-  padding: 20px;
+<style >
+html{
+  height: 100%;
+  display:flex;
+}
+body{
+    flex:1;
+}
+.map {
+  padding-top: 0;
 }
 </style>
